@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="ARCHREALL - Research-based spatial design for human-centered wellbeing. Join our waiting list to transform your space.">
-    <title>ARCHREALL - Research-Based Spatial Design</title>
+    <meta name="description" content="ARCHREALL - Research-based spatial design for human-centered wellbeing. Transform your space through neuroscience and computational design.">
+    <title>ARCHREALL - Responsive Spatial Design</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Koulen&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
@@ -18,24 +18,28 @@
         :root {
             --primary: #8b5cf6;
             --primary-dark: #6d28d9;
+            --primary-light: rgba(139, 92, 246, 0.1);
             --text: #ffffff;
             --text-muted: rgba(255, 255, 255, 0.7);
             --background: #000000;
-            --card-bg: rgba(255, 255, 255, 0.03);
-            --border: rgba(255, 255, 255, 0.1);
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 0.5; }
         }
 
         @keyframes float {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+            50% { transform: translateY(-5px); }
         }
 
-        @keyframes gradient {
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+
+        @keyframes gradientBG {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
@@ -47,9 +51,10 @@
             font-family: 'Inter', sans-serif;
             line-height: 1.6;
             overflow-x: hidden;
-            position: relative;
+            min-height: 100vh;
         }
-      /* Noise overlay and basic layout */
+
+        /* Grain texture overlay */
         body::before {
             content: '';
             position: fixed;
@@ -57,12 +62,24 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-            opacity: 0.05;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 2000 2000' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
             pointer-events: none;
+            opacity: 0.15;
             z-index: 1;
         }
 
+        /* Gradient background */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.15) 0%, transparent 70%);
+            animation: pulse 8s ease-in-out infinite;
+            z-index: 0;
+        }
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -71,7 +88,12 @@
             z-index: 2;
         }
 
-        /* Hero Section */
+        .section {
+            padding: 6rem 0;
+            position: relative;
+        }
+
+        /* Hero Section Styles */
         .hero {
             min-height: 100vh;
             display: flex;
@@ -83,31 +105,42 @@
             position: relative;
         }
 
-        .hero::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100vw;
-            height: 100%;
-            background: radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.1) 0%, transparent 70%);
-            z-index: -1;
-            animation: pulse 4s ease-in-out infinite;
-        }
-
         .title {
             font-family: 'Koulen', sans-serif;
             font-size: clamp(4rem, 15vw, 9rem);
             line-height: 1;
             margin-bottom: 2rem;
             position: relative;
-            background: linear-gradient(90deg, #fff, #b4a8ff, #fff);
+            background: linear-gradient(90deg, #fff, var(--primary), #fff);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
             background-size: 200% auto;
-            animation: gradient 8s ease infinite;
+            transition: all 0.5s ease;
+            cursor: default;
+        }
+
+        .title::after {
+            content: '';
+            position: absolute;
+            inset: -50%;
+            background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .title:hover {
+            transform: translateY(-5px);
+            text-shadow: 
+                0 0 40px rgba(139, 92, 246, 0.4),
+                0 0 80px rgba(139, 92, 246, 0.2);
+        }
+
+        .title:hover::after {
+            opacity: 0.2;
+            animation: pulse 2s ease-in-out infinite;
         }
 
         .tagline {
@@ -117,11 +150,22 @@
             max-width: 800px;
             margin: 0 auto 4rem;
             position: relative;
+            transition: color 0.3s ease;
+            cursor: default;
+        }
+
+        .tagline:hover {
+            color: var(--text);
         }
 
         .tagline span {
             display: inline-block;
             position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .tagline:hover span {
+            animation: float 2s ease infinite;
         }
 
         .tagline span::before,
@@ -130,189 +174,115 @@
             color: var(--primary);
             margin: 0 0.5rem;
             opacity: 0.7;
+            transition: opacity 0.3s ease;
         }
 
         .tagline span::after {
             content: '⟩';
         }
-      /* Vision and Features Sections */
-        .vision-section {
-            padding: 6rem 0;
-            text-align: center;
-        }
 
-        .vision-text {
-            max-width: 800px;
-            margin: 0 auto;
-            font-size: 1.25rem;
-            color: var(--text-muted);
-            line-height: 1.8;
+        .tagline:hover span::before,
+        .tagline:hover span::after {
+            opacity: 1;
         }
-
+        /* Features Section */
         .features {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
+            gap: 4rem;
             padding: 4rem 0;
         }
 
         .feature {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            padding: 2rem;
-            border-radius: 1rem;
             text-align: center;
-            transition: all 0.3s ease;
+            transition: transform 0.3s ease;
             position: relative;
-            overflow: hidden;
-        }
-
-        .feature::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(45deg, transparent, rgba(139, 92, 246, 0.05));
-            transition: opacity 0.3s ease;
-            opacity: 0;
         }
 
         .feature:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
-
-        .feature:hover::before {
-            opacity: 1;
+            transform: translateY(-10px);
         }
 
         .feature svg {
-            width: 48px;
-            height: 48px;
+            width: 64px;
+            height: 64px;
             margin-bottom: 1.5rem;
             stroke: var(--primary);
-            transition: transform 0.3s ease;
+            stroke-width: 1.5;
+            transition: all 0.3s ease;
         }
 
         .feature:hover svg {
             transform: scale(1.1);
+            filter: drop-shadow(0 0 20px var(--primary-light));
         }
 
-        /* Research Section */
-        .research-section {
-            padding: 6rem 0;
-            background: linear-gradient(to bottom, transparent, rgba(139, 92, 246, 0.05), transparent);
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: clamp(2rem, 5vw, 3rem);
-            margin-bottom: 3rem;
-            color: var(--primary);
-        }
-
-        .research-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .research-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            padding: 2rem;
-            border-radius: 1rem;
-            transition: transform 0.3s ease;
-        }
-
-        .research-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.1);
-        }
-
-        .research-card h3 {
-            color: var(--primary);
+        .feature h3 {
+            color: var(--text);
+            font-size: 1.5rem;
             margin-bottom: 1rem;
-            font-size: 1.25rem;
+            transition: color 0.3s ease;
         }
 
-        .research-card p {
-            color: var(--text-muted);
-        }
-
-        .metrics {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 1.5rem;
-        }
-
-        .metric {
-            text-align: center;
-        }
-
-        .metric-number {
-            font-size: 2.5rem;
+        .feature:hover h3 {
             color: var(--primary);
-            font-weight: bold;
-            display: block;
         }
 
-        .metric-label {
+        .feature p {
             color: var(--text-muted);
-            font-size: 0.9rem;
+            line-height: 1.8;
+            font-size: 1.1rem;
         }
-      /* Waitlist Section */
+
+        /* Waitlist Section */
         .waitlist-section {
-            padding: 6rem 0;
             text-align: center;
             position: relative;
-        }
-
-        .cta-container {
-            max-width: 600px;
-            margin: 0 auto;
+            background: linear-gradient(180deg, transparent, var(--primary-light), transparent);
+            margin: 4rem 0;
+            padding: 6rem 0;
         }
 
         .email-form {
-            position: relative;
             max-width: 32rem;
-            margin: 0 auto;
-        }
-
-        .email-form::after {
-            content: '';
-            position: absolute;
-            inset: -2px;
-            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
-            opacity: 0.5;
-            filter: blur(20px);
-            border-radius: 0.75rem;
-            animation: pulse 4s ease-in-out infinite;
+            margin: 2rem auto;
+            position: relative;
         }
 
         .form-container {
+            display: flex;
+            gap: 1rem;
             position: relative;
             z-index: 1;
-            background: rgba(0, 0, 0, 0.8);
-            border: 1px solid var(--border);
-            border-radius: 0.75rem;
-            padding: 0.5rem;
-            display: flex;
-            backdrop-filter: blur(10px);
+        }
+
+        .email-form::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-dark), var(--primary));
+            opacity: 0.5;
+            filter: blur(20px);
+            animation: pulse 4s ease-in-out infinite;
+            border-radius: 1rem;
         }
 
         input[type="email"] {
             flex-grow: 1;
-            background: transparent;
-            border: none;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(139, 92, 246, 0.2);
             color: white;
             padding: 1rem 1.5rem;
-            font-size: 1rem;
+            font-size: 1.1rem;
+            border-radius: 0.5rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        input[type="email"]:focus {
             outline: none;
-            font-family: 'Inter', sans-serif;
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.2);
         }
 
         input[type="email"]::placeholder {
@@ -324,8 +294,8 @@
             color: white;
             border: none;
             padding: 1rem 2rem;
+            font-size: 1.1rem;
             border-radius: 0.5rem;
-            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
             position: relative;
@@ -334,82 +304,145 @@
 
         button:hover {
             background: var(--primary-dark);
+            transform: translateY(-2px);
         }
 
-        .secondary-ctas {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            margin-top: 1.5rem;
+        button::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 200%;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: translate(-50%, -50%) scale(0);
+            border-radius: 50%;
+            transition: transform 0.5s ease;
         }
 
-        .secondary-cta {
-            background: transparent;
-            border: 1px solid var(--primary);
-            color: var(--primary);
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
-            transition: all 0.3s ease;
-        }
-
-        .secondary-cta:hover {
-            background: var(--primary);
-            color: white;
-        }
-
-        .support-count {
-            background: var(--primary);
-            color: white;
-            padding: 0.2rem 0.5rem;
-            border-radius: 1rem;
-            font-size: 0.8rem;
-            margin-right: 0.5rem;
+        button:active::after {
+            transform: translate(-50%, -50%) scale(1);
         }
 
         .waitlist-info {
             margin-top: 2rem;
             color: var(--text-muted);
+            font-size: 1.1rem;
         }
 
         .highlight {
             color: var(--primary);
             font-weight: 600;
         }
+        /* Research Section */
+        .research-section {
+            text-align: center;
+            position: relative;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 5vw, 3rem);
+            color: var(--primary);
+            margin-bottom: 3rem;
+        }
+
+        .research-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            text-align: left;
+        }
+
+        .research-content h3 {
+            color: var(--text);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .research-content p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        /* Vision Section */
+        .vision-text {
+            max-width: 800px;
+            margin: 0 auto;
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            line-height: 1.8;
+        }
 
         /* Footer */
         footer {
-            padding: 2rem 0;
+            padding: 4rem 0;
             text-align: center;
-            border-top: 1px solid var(--border);
             margin-top: 4rem;
-            color: var(--text-muted);
+            position: relative;
         }
 
-        /* Responsive Design */
+        footer p {
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        /* Success Message */
+        .success-message {
+            color: var(--primary);
+            margin-top: 1rem;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.5s ease;
+        }
+
+        .success-message.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Mobile Responsiveness */
         @media (max-width: 768px) {
             .container {
-                padding: 0 1rem;
+                padding: 0 1.5rem;
             }
 
-            .features {
-                grid-template-columns: 1fr;
-            }
-
-            .research-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .secondary-ctas {
-                flex-direction: column;
+            .section {
+                padding: 4rem 0;
             }
 
             .form-container {
                 flex-direction: column;
-                gap: 1rem;
             }
 
-            input[type="email"] {
-                text-align: center;
+            button {
+                width: 100%;
+            }
+
+            .research-grid {
+                gap: 2rem;
+            }
+
+            .footer-links {
+                flex-direction: column;
+                gap: 1rem;
             }
         }
     </style>
@@ -421,81 +454,68 @@
             <p class="tagline"><span>Responsive spatial design for human-centred wellbeing</span></p>
         </section>
 
-        <section class="vision-section">
-            <h2 class="section-title">Our Vision</h2>
-            <p class="vision-text">
-                We're pioneering the fusion of neuroscience and architectural design to create spaces that actively enhance human wellbeing. Through empirical evaluation and advanced computational design, we're transforming how spaces impact your psychological and physiological responses.
-            </p>
-        </section>
-
         <section class="features">
             <div class="feature">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                     <path d="M3 21h18M3 10h18M3 7l9-4 9 4M4 10h2v11H4zm7 0h2v11h-2zm7 0h2v11h-2z"/>
                 </svg>
                 <h3>Adaptive Spaces</h3>
                 <p>Environments that evolve with your needs, backed by neurological research</p>
             </div>
             <div class="feature">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 1 7.92 12.446a1 1 0 0 1 -.313.093h-8m-8 0h8m-8 0a7.5 7.5 0 0 1 7.92-12.446"/>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M12 3a9 9 0 0 1 9 9M12 3a9 9 0 0 0-9 9m9-9v9m0 0l-3-3m3 3l3-3"/>
                 </svg>
                 <h3>Evidence-Based</h3>
                 <p>Designs validated through advanced neuroscience and biometric data</p>
             </div>
             <div class="feature">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M5 3v4M3 5h4M6 17v4M4 19h4m8-16l4 4m-4-4l4 4m-5 3l4 4m-4-4l4 4"/>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M13 10V3L4 14h7v7l9-11h-7z"/>
                 </svg>
                 <h3>Future-Ready</h3>
                 <p>AI-powered computational design optimized for wellbeing</p>
             </div>
         </section>
 
-        <section class="research-section">
-            <h2 class="section-title">Research Validation</h2>
-            <div class="research-grid">
-                <div class="research-card">
-                    <h3>Neurological Impact</h3>
-                    <p>20-subject study using EEG monitoring and biometric tools to measure emotional and physiological responses to architectural features.</p>
+        <section class="waitlist-section">
+            <form class="email-form" action="https://formspree.io/f/xdkokwjl" method="POST">
+                <div class="form-container">
+                    <input type="email" name="email" placeholder="Join the waiting list" required>
+                    <button type="submit">Join Waitlist</button>
                 </div>
-                <div class="research-card">
-                    <h3>Key Metrics</h3>
-                    <div class="metrics">
-                        <div class="metric">
-                            <span class="metric-number">5</span>
-                            <span class="metric-label">Architectural Parameters</span>
-                        </div>
-                        <div class="metric">
-                            <span class="metric-number">20+</span>
-                            <span class="metric-label">Biometric Data Points</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            </form>
+            <p class="waitlist-info">Join <span class="highlight">124 innovators</span> already on the waiting list</p>
+            <p class="success-message">Thank you for joining! We'll keep you updated.</p>
         </section>
 
-        <section class="waitlist-section">
-            <h2 class="section-title">Be Part of the Future</h2>
-            <div class="cta-container">
-                <form class="email-form" action="https://formspree.io/f/xdkokwjl" method="POST">
-                    <div class="form-container">
-                        <input type="email" name="email" placeholder="Join the waiting list" required>
-                        <button type="submit">Join Waitlist</button>
-                    </div>
-                </form>
-                <div class="secondary-ctas">
-                    <button class="secondary-cta">
-                        <span class="support-count">47</span>
-                        Support Project
-                    </button>
+        <section class="vision-section section">
+            <h2 class="section-title">Our Vision</h2>
+            <p class="vision-text">
+                We're pioneering the fusion of neuroscience and architectural design to create spaces that actively enhance human wellbeing. Through empirical evaluation and advanced computational design, we're transforming how spaces impact your psychological and physiological responses.
+            </p>
+        </section>
+
+        <section class="research-section section">
+            <h2 class="section-title">Research Validation</h2>
+            <div class="research-grid">
+                <div class="research-content">
+                    <h3>Neurological Impact</h3>
+                    <p>20-subject study using EEG monitoring and biometric tools reveals significant improvements in relaxation and cognitive performance through our architectural solutions.</p>
                 </div>
-                <p class="waitlist-info">Join <span class="highlight">124 innovators</span> already on the waiting list</p>
+                <div class="research-content">
+                    <h3>Evidence-Based Results</h3>
+                    <p>Comprehensive biometric data, including heart rate variability and skin response measurements, confirms the stress-reducing effects of our spatial design approach.</p>
+                </div>
             </div>
         </section>
 
         <footer>
             <p>Transforming spaces, enhancing lives</p>
+            <div class="footer-links">
+                <a href="mailto:contact@archreall.com">contact@archreall.com</a>
+                <a href="#">Privacy Policy</a>
+            </div>
         </footer>
     </div>
 
@@ -504,6 +524,7 @@
             e.preventDefault();
             const form = e.target;
             const button = form.querySelector('button');
+            const successMessage = document.querySelector('.success-message');
             const email = form.querySelector('input[type="email"]').value;
 
             button.disabled = true;
@@ -513,22 +534,25 @@
                 const response = await fetch(form.action, {
                     method: 'POST',
                     body: JSON.stringify({ email }),
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' }
                 });
 
                 if (response.ok) {
                     button.textContent = 'Joined!';
                     form.reset();
+                    successMessage.classList.add('visible');
+                    setTimeout(() => {
+                        button.textContent = 'Join Waitlist';
+                        button.disabled = false;
+                        successMessage.classList.remove('visible');
+                    }, 3000);
                 } else {
-                    button.textContent = 'Try Again';
+                    throw new Error('Submission failed');
                 }
             } catch (error) {
-                button.textContent = 'Error';
+                button.textContent = 'Try Again';
+                button.disabled = false;
             }
-
-            button.disabled = false;
         });
     </script>
 </body>
