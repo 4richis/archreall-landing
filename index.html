@@ -291,6 +291,42 @@
 				opacity: 1;
 				color: var(--secondary);
 			}
+
+			.showcase-video {
+				width: 100%;
+				max-width: 900px;
+				height: auto;
+				border-radius: 1.5rem;
+				margin: 3rem auto;
+				box-shadow: 0 20px 60px rgba(139, 92, 246, 0.3);
+				border: 1px solid var(--border);
+				backdrop-filter: blur(10px);
+				transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+				position: relative;
+				overflow: hidden;
+			}
+
+			.showcase-video::before {
+				content: "";
+				position: absolute;
+				inset: -2px;
+				background: linear-gradient(135deg, var(--primary), var(--secondary), var(--primary));
+				opacity: 0;
+				border-radius: 1.5rem;
+				transition: opacity 0.4s ease;
+				z-index: -1;
+			}
+
+			.showcase-video:hover {
+				transform: translateY(-8px) scale(1.02);
+				box-shadow: 0 30px 80px rgba(139, 92, 246, 0.4);
+				border-color: var(--primary);
+			}
+
+			.showcase-video:hover::before {
+				opacity: 0.6;
+			}
+
 			/* Features Section */
 			.features {
 				display: grid;
@@ -795,6 +831,11 @@
 					margin-bottom: 3rem;
 				}
 
+				.showcase-video {
+					margin: 2rem auto;
+					max-width: 100%;
+				}
+
 				.features {
 					grid-template-columns: 1fr;
 					gap: 2rem;
@@ -863,6 +904,9 @@
 		<div class="container">
 			<section class="hero">
 				<h1 class="title">ARCHREALL</h1>
+				<video class="showcase-video" autoplay muted loop playsinline>
+					<source src="https://github.com/4richis/archreall-landing/releases/download/videos/showcase.mp4" type="video/mp4" />
+				</video>
 				<p class="tagline"><span>Responsive spatial design for human-centred wellbeing</span></p>
 			</section>
 
